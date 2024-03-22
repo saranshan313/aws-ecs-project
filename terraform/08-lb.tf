@@ -2,7 +2,7 @@
 resource "aws_security_group" "ecs_alb_sg" {
   name        = "secgrp-${local.settings.env}-${local.settings.region}-ecslb-01"
   description = "Security Group for ECS LoadBalancer"
-  vpc_id      = data.terraform_remote_state.vpc.outputs.ecs_vpc_id
+  vpc_id      = data.terraform_remote_state.vpc.outputs.network_vpc_id
 
   dynamic "ingress" {
     for_each = local.settings.ecs_app_lb_sg_rules
@@ -34,7 +34,7 @@ resource "aws_lb" "ecs_alb" {
   internal                         = local.settings.ecs_alb_internal
   load_balancer_type               = local.settings.ecs_alb_type
   security_groups                  = [aws_security_group.ecs_alb_sg.id]
-  subnets                          = [for k, v in data.terraform_remote_state.vpc.outputs.ecs_public_subnets : v]
+  subnets                          = [for k, v in data.terraform_remote_state.vpc.outputs.network_public_subnets : v]
   enable_cross_zone_load_balancing = local.settings.ecs_alb_crosszone_lb
   ip_address_type                  = local.settings.ecs_alb_ip_type
 
@@ -52,7 +52,7 @@ resource "aws_lb_target_group" "ecs_alb_tg" {
   port        = local.settings.ecs_alb_traffic_port
   protocol    = local.settings.ecs_alb_protocol
   target_type = local.settings.ecs_alb_target_type
-  vpc_id      = data.terraform_remote_state.vpc.outputs.ecs_vpc_id
+  vpc_id      = data.terraform_remote_state.vpc.outputs.network_vpc_id
 
   health_check {
     healthy_threshold   = "3"
