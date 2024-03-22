@@ -7,7 +7,7 @@ terraform {
       version = "5.40.0"
     }
   }
-  
+
   backend "s3" {
     # bucket         = "tf-remote-state-234-343-555"
     # key            = "terraform.tfstate"

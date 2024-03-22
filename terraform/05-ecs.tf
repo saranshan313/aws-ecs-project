@@ -80,14 +80,14 @@ resource "aws_ecs_task_definition" "ecs_app" {
 
 #ECS Service Definition
 resource "aws_ecs_service" "ecs_app" {
-  name                    = "svc-${local.settings.env}-${local.settings.region}-app-01"
-  cluster                 = aws_ecs_cluster.ecs_app.id
-  task_definition         = aws_ecs_task_definition.ecs_app.arn
-  launch_type             = "FARGATE"
-  scheduling_strategy     = "REPLICA"
-  desired_count           = 2
-  force_new_deployment    = true
-  propagate_tags          = "TASK_DEFINITION"
+  name                 = "svc-${local.settings.env}-${local.settings.region}-app-01"
+  cluster              = aws_ecs_cluster.ecs_app.id
+  task_definition      = aws_ecs_task_definition.ecs_app.arn
+  launch_type          = "FARGATE"
+  scheduling_strategy  = "REPLICA"
+  desired_count        = 2
+  force_new_deployment = true
+  propagate_tags       = "TASK_DEFINITION"
 
   network_configuration {
     subnets          = [for k, v in data.terraform_remote_state.vpc.outputs.ecs_application_subnets : v]
