@@ -90,7 +90,7 @@ resource "aws_ecs_service" "ecs_app" {
   propagate_tags       = "TASK_DEFINITION"
 
   network_configuration {
-    subnets          = [for k, v in data.terraform_remote_state.vpc.outputs.ecs_application_subnets : v]
+    subnets          = [for k, v in data.terraform_remote_state.vpc.outputs.network_application_subnets : v]
     security_groups  = [aws_security_group.ecs_app_service.id]
     assign_public_ip = false
   }
@@ -117,7 +117,7 @@ resource "aws_ecs_service" "ecs_app" {
 resource "aws_security_group" "ecs_app_service" {
   name        = "secgrp-${local.settings.env}-${local.settings.region}-ecs-svc-01"
   description = "Security Group for ECS Service"
-  vpc_id      = data.terraform_remote_state.vpc.outputs.ecs_vpc_id
+  vpc_id      = data.terraform_remote_state.vpc.outputs.network_vpc_id
 
   dynamic "ingress" {
     for_each = local.settings.ecs_app_service_sg_rules
