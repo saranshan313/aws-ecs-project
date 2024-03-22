@@ -1,0 +1,35 @@
+region: use1
+env: staging
+
+#ECS Applications
+ecs_app_service_sg_rules:
+  ingressrule1:
+    from_port: 80
+    to_port: 80
+    protocol: 6
+    security_groups: []
+    cidr_blocks: []    
+ecs_app_lb_sg_rules:
+  ingressrule1:
+    from_port: 80
+    to_port: 80
+    protocol: 6
+    security_groups: []
+    cidr_blocks: ["0.0.0.0/0"]   
+  ingressrule2:
+    from_port: 443
+    to_port: 443
+    protocol: 6
+    security_groups: []
+    cidr_blocks: ["0.0.0.0/0"]    
+
+#ECS Application LoadBalancer
+ecs_alb_internal: false
+ecs_alb_type: "application"
+ecs_alb_crosszone_lb: true
+ecs_alb_ip_type: "ipv4"
+
+ecs_alb_traffic_port: 80
+ecs_alb_protocol: "HTTP"
+ecs_alb_target_type: "ip"
+ecs_alb_sg_description: Security Group for Ingress Application Load Balancer
