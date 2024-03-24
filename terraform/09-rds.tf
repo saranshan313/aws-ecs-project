@@ -44,7 +44,7 @@ resource "aws_security_group" "ecs_rds" {
 
 #RDS Database for ECS Applications
 resource "aws_db_instance" "ecs_rds" {
-  db_name             = "rds-${local.settings.env}-${local.settings.region}-ecs-01"
+  db_name             = "ecsapps"
   allocated_storage   = local.settings.ecs_rds.allocated_storage
   storage_type        = local.settings.ecs_rds.storage_type
   engine              = local.settings.ecs_rds.engine
