@@ -49,7 +49,7 @@ ecs_rds:
   engine: "mysql"
   engine_version: "8.0.36"
   instance_class: "db.t3.micro"
-  username: "ecs-user"
+  username: "ecsroot"
   deletion_protection: false
   manage_master_user_password: true
   skip_final_snapshot: true
