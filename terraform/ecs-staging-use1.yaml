@@ -25,13 +25,13 @@ ecs_app_lb_sg_rules:
 
 #ECS Application LoadBalancer
 ecs_alb_internal: false
-ecs_alb_type: "application"
+ecs_alb_type: application
 ecs_alb_crosszone_lb: true
-ecs_alb_ip_type: "ipv4"
+ecs_alb_ip_type: ipv4
 
 ecs_alb_traffic_port: 80
-ecs_alb_protocol: "HTTP"
-ecs_alb_target_type: "ip"
+ecs_alb_protocol: HTTP
+ecs_alb_target_type: ip
 ecs_alb_sg_description: Security Group for Ingress Application Load Balancer
 
 ecs_rds_sg_rules:
@@ -45,11 +45,11 @@ ecs_rds_sg_rules:
 #RDS Configurations
 ecs_rds:
   allocated_storage: 20
-  storage_type: "gp2"
-  engine: "mysql"
-  engine_version: "8.0.36"
-  instance_class: "db.t3.micro"
-  username: "ecsroot"
+  storage_type: gp2
+  engine: mysql
+  engine_version: 8.0.36
+  instance_class: db.t3.micro
+  username: ecsroot
   deletion_protection: false
   manage_master_user_password: true
   skip_final_snapshot: true
