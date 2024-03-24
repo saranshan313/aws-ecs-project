@@ -8,20 +8,20 @@ ecs_app_service_sg_rules:
     to_port: 80
     protocol: 6
     security_groups: []
-    cidr_blocks: []    
+    cidr_blocks: []
 ecs_app_lb_sg_rules:
   ingressrule1:
     from_port: 80
     to_port: 80
     protocol: 6
     security_groups: []
-    cidr_blocks: ["0.0.0.0/0"]   
+    cidr_blocks: ["0.0.0.0/0"]
   ingressrule2:
     from_port: 443
     to_port: 443
     protocol: 6
     security_groups: []
-    cidr_blocks: ["0.0.0.0/0"]    
+    cidr_blocks: ["0.0.0.0/0"]
 
 #ECS Application LoadBalancer
 ecs_alb_internal: false
@@ -33,3 +33,28 @@ ecs_alb_traffic_port: 80
 ecs_alb_protocol: "HTTP"
 ecs_alb_target_type: "ip"
 ecs_alb_sg_description: Security Group for Ingress Application Load Balancer
+
+ecs_rds_sg_rules:
+  ingressrule1:
+    from_port: 3306
+    to_port: 3306
+    protocol: 6
+    security_groups: []
+    cidr_blocks: []
+
+#RDS Configurations
+ecs_rds:
+  allocated_storage: 20
+  storage_type: "gp2"
+  engine: "mysql"
+  engine_version: "8.0.36"
+  instance_class: "db.t2.micro"
+  username: "ecs-user"
+  deletion_protection: false
+  manage_master_user_password: true
+  skip_final_snapshot: true
+  multi_az: true
+
+#ECR Configurations
+ecr_ecs:
+  scan_on_push: true

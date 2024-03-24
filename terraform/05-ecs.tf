@@ -110,7 +110,8 @@ resource "aws_ecs_service" "ecs_app" {
 
   depends_on = [
     aws_lb_listener.ecs_app_listener,
-    aws_iam_role.ecsTaskExecutionRole
+    aws_iam_role.ecsTaskExecutionRole,
+    aws_db_instance.ecs_rds
   ]
 }
 
