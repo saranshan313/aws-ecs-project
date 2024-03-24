@@ -55,7 +55,7 @@ resource "aws_db_instance" "ecs_rds" {
   deletion_protection = local.settings.ecs_rds.deletion_protection
 
   vpc_security_group_ids = [
-    aws_security_group.rds_sg.id
+    aws_security_group.ecs_rds.id
   ]
   db_subnet_group_name = aws_db_subnet_group.ecs_rds.name
 
