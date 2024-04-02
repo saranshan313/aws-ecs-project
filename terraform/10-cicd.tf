@@ -229,3 +229,176 @@ resource "aws_codedeploy_deployment_group" "ecs_apps" {
     }
   )
 }
+
+#Code Pipeline for ECS project
+resource "aws_codepipeline" "ecs_apps" {
+  name     = "pipeline-${local.settings.env}-${local.settings.region}-ecs-01"
+  role_arn = aws_iam_role.codepipeline_role.arn
+
+  artifact_store {
+    location = aws_s3_bucket.codepipeline_bucket.bucket
+    type     = "S3"
+  }
+
+  stage {
+    name = "source-${local.settings.env}-${local.settings.region}-ecs-01"
+
+    action {
+      name             = "Source"
+      category         = "Source"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
+      version          = "1"
+      output_artifacts = ["source_output"]
+      run_order        = 1
+
+      configuration = {
+        ConnectionArn    = aws_codestarconnections_connection.source_provider.arn
+        FullRepositoryId = "saranshan313/sample-app"
+        BranchName       = "main"
+      }
+    }
+  }
+
+  stage {
+    name = "build-${local.settings.env}-${local.settings.region}-ecs-01"
+
+    action {
+      name             = "Build"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source_output"]
+      output_artifacts = ["build_output"]
+      version          = "1"
+      run_order        = 1
+
+      configuration = {
+        ProjectName = "build-${local.settings.env}-${local.settings.region}-ecs-01"
+      }
+    }
+  }
+
+  stage {
+    name = "deploy-${local.settings.env}-${local.settings.region}-ecs-01"
+
+    action {
+      name            = "Deploy"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "CodeDeployToECS"
+      input_artifacts = ["build_output"]
+      version         = "1"
+      run_order       = 1
+
+      configuration = {
+        AppSpecTemplateArtifact        = SourceArtifact
+        ApplicationName                = "deploy-${local.settings.env}-${local.settings.region}-ecs-01"
+        DeploymentGroupName            = "deploygrp-${local.settings.env}-${local.settings.region}-ecs-01"
+        Image1ArtifactName             = "sample-app"
+        Image1ContainerName            = "IMAGE1_NAME"
+        TaskDefinitionTemplatePath     = "taskdef.json"
+        AppSpecTemplatePath            = "appspec.yaml"
+        TaskDefinitionTemplateArtifact = "SourceArtifact"
+      }
+    }
+  }
+}
+
+#Source Code repository type to trigger codepipeline
+resource "aws_codestarconnections_connection" "source_provider" {
+  name          = "sourceconn-${local.settings.env}-${local.settings.region}-ecs-01"
+  provider_type = "GitHub"
+}
+
+#S3 bucket for Code Pipeline
+resource "aws_s3_bucket" "ecs_pipeline" {
+  bucket = "s3-${local.settings.env}-${local.settings.region}-ecspipeline-01"
+}
+
+resource "aws_s3_bucket_public_access_block" "ecs_pipeline" {
+  bucket = aws_s3_bucket.ecs_pipeline.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "ecs_pipeline" {
+  bucket = aws_s3_bucket.ecs_pipeline.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "ecs_pipeline" {
+  bucket = aws_s3_bucket.ecs_pipeline.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+#IAM Role for Code Pipeline
+data "aws_iam_policy_document" "pipeline_assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["codepipeline.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "codepipeline_role" {
+  name               = "role-${local.settings.env}-${local.settings.region}-ecspipeline-01"
+  assume_role_policy = data.aws_iam_policy_document.pipeline_assume_role.json
+}
+
+data "aws_iam_policy_document" "codepipeline_policy" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+      "s3:GetBucketVersioning",
+      "s3:PutObjectAcl",
+      "s3:PutObject",
+    ]
+
+    resources = [
+      aws_s3_bucket.codepipeline_bucket.arn,
+      "${aws_s3_bucket.codepipeline_bucket.arn}/*"
+    ]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["codestar-connections:UseConnection"]
+    resources = [aws_codestarconnections_connection.example.arn]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "codebuild:BatchGetBuilds",
+      "codebuild:StartBuild",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "codepipeline_policy" {
+  name   = "codepipeline_policy"
+  role   = aws_iam_role.codepipeline_role.id
+  policy = data.aws_iam_policy_document.codepipeline_policy.json
+}
