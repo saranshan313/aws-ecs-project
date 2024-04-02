@@ -292,7 +292,7 @@ resource "aws_codepipeline" "ecs_apps" {
       run_order       = 1
 
       configuration = {
-#        AppSpecTemplateArtifact        = SourceArtifact
+        #        AppSpecTemplateArtifact        = SourceArtifact
         ApplicationName                = "deploy-${local.settings.env}-${local.settings.region}-ecs-01"
         DeploymentGroupName            = "deploygrp-${local.settings.env}-${local.settings.region}-ecs-01"
         Image1ArtifactName             = "sample-app"
