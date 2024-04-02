@@ -222,4 +222,10 @@ resource "aws_codedeploy_deployment_group" "ecs_apps" {
       }
     }
   }
+  tags = merge(
+    local.tags,
+    {
+      Name = "deploy-${local.settings.env}-${local.settings.region}-ecs-01"
+    }
+  )
 }
