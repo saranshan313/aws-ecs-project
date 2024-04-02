@@ -105,7 +105,7 @@ resource "aws_lb_listener" "ecs_app_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ecs_alb_tg.id
+    target_group_arn = aws_lb_target_group.ecs_alb_tg_blue.id
   }
   tags = merge(
     {
