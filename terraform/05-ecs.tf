@@ -96,7 +96,7 @@ resource "aws_ecs_service" "ecs_app" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.ecs_alb_tg.arn
+    target_group_arn = aws_lb_target_group.ecs_alb_tg_blue.arn
     container_name   = "webapp"
     container_port   = 80
   }
