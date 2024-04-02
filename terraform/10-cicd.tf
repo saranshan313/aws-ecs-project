@@ -151,11 +151,9 @@ data "aws_iam_policy_document" "ecs_codedeploy_assume_policy" {
   }
 }
 
-resource "aws_iam_role_policy" "ecs_codedeploy_permission_policy" {
-  role = aws_iam_role.ecs_codebuild.name
-  policy = [
-    "arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"
-  ]
+resource "aws_iam_role_policy_attachment" "ecs_codedeploy_permission_policy" {
+  role      = aws_iam_role.ecs_codedeploy.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"
 }
 
 resource "aws_iam_role" "ecs_codedeploy" {
