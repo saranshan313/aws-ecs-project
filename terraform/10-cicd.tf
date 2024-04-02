@@ -236,7 +236,7 @@ resource "aws_codepipeline" "ecs_apps" {
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
-    location = aws_s3_bucket.codepipeline_bucket.bucket
+    location = aws_s3_bucket.ecs_pipeline.bucket
     type     = "S3"
   }
 
@@ -292,7 +292,7 @@ resource "aws_codepipeline" "ecs_apps" {
       run_order       = 1
 
       configuration = {
-        AppSpecTemplateArtifact        = SourceArtifact
+#        AppSpecTemplateArtifact        = SourceArtifact
         ApplicationName                = "deploy-${local.settings.env}-${local.settings.region}-ecs-01"
         DeploymentGroupName            = "deploygrp-${local.settings.env}-${local.settings.region}-ecs-01"
         Image1ArtifactName             = "sample-app"
@@ -374,15 +374,15 @@ data "aws_iam_policy_document" "codepipeline_policy" {
     ]
 
     resources = [
-      aws_s3_bucket.codepipeline_bucket.arn,
-      "${aws_s3_bucket.codepipeline_bucket.arn}/*"
+      aws_s3_bucket.ecs_pipeline.arn,
+      "${aws_s3_bucket.ecs_pipeline.arn}/*"
     ]
   }
 
   statement {
     effect    = "Allow"
     actions   = ["codestar-connections:UseConnection"]
-    resources = [aws_codestarconnections_connection.example.arn]
+    resources = [aws_codestarconnections_connection.source_provider.arn]
   }
 
   statement {
