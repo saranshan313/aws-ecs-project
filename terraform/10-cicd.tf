@@ -156,15 +156,15 @@ resource "aws_iam_role_policy" "ecs_codedeploy_permission_policy" {
   policy = "arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"
 }
 
-resource "aws_iam_role" "ecs_codebuild" {
-  name = "role-${local.settings.env}-${local.settings.region}-ecsbuild-01"
+resource "aws_iam_role" "ecs_codedeploy" {
+  name = "role-${local.settings.env}-${local.settings.region}-ecsdeploy-01"
 
-  assume_role_policy = data.aws_iam_policy_document.ecs_codebuild_assume_policy.json
+  assume_role_policy = data.aws_iam_policy_document.ecs_codedeploy_assume_policy.json
 
   tags = merge(
     local.tags,
     {
-      Name = "role-${local.settings.env}-${local.settings.region}-ecsbuild-01"
+      Name = "role-${local.settings.env}-${local.settings.region}-ecsdeploy-01"
     }
   )
 }
@@ -179,7 +179,7 @@ resource "aws_codedeploy_deployment_group" "ecs_apps" {
   app_name               = aws_codedeploy_app.ecs_apps.name
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
   deployment_group_name  = "deploygrp-${local.settings.env}-${local.settings.region}-ecs-01"
-  service_role_arn       = aws_iam_role.example.arn
+  service_role_arn       = aws_iam_role.ecs_codedeploy.arn
 
   auto_rollback_configuration {
     enabled = true
