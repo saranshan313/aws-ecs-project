@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "ecs_codebuild_permission_policy" {
       "s3:*"
     ]
     resources = [
-      "${aws_s3_bucket.ecs_codebuild.arn}",
+      aws_s3_bucket.ecs_codebuild.arn,
       "${aws_s3_bucket.ecs_codebuild.arn}/*"
     ]
   }
