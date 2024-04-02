@@ -95,6 +95,10 @@ resource "aws_ecs_service" "ecs_app" {
     assign_public_ip = false
   }
 
+  deployment_controller {
+    type = "CODE_DEPLOY"
+  }
+
   load_balancer {
     target_group_arn = aws_lb_target_group.ecs_alb_tg_blue.arn
     container_name   = "webapp"
