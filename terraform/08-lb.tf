@@ -46,9 +46,9 @@ resource "aws_lb" "ecs_alb" {
   )
 }
 
-# Target Group for ECS Application Load Balancer
-resource "aws_lb_target_group" "ecs_alb_tg" {
-  name        = "tg-${local.settings.env}-${local.settings.region}-ecs-app-01"
+# Target Groups for ECS Application Load Balancer
+resource "aws_lb_target_group" "ecs_alb_tg_blue" {
+  name        = "tg-${local.settings.env}-${local.settings.region}-ecs-app-blue-01"
   port        = local.settings.ecs_alb_traffic_port
   protocol    = local.settings.ecs_alb_protocol
   target_type = local.settings.ecs_alb_target_type
@@ -66,12 +66,38 @@ resource "aws_lb_target_group" "ecs_alb_tg" {
 
   tags = merge(
     {
-      Name = "tg-${local.settings.env}-${local.settings.region}-ecs-app-01"
+      Name = "tg-${local.settings.env}-${local.settings.region}-ecs-app-blue-01"
     },
     local.tags
   )
 }
 
+resource "aws_lb_target_group" "ecs_alb_tg_green" {
+  name        = "tg-${local.settings.env}-${local.settings.region}-ecs-app-green-01"
+  port        = local.settings.ecs_alb_traffic_port
+  protocol    = local.settings.ecs_alb_protocol
+  target_type = local.settings.ecs_alb_target_type
+  vpc_id      = data.terraform_remote_state.vpc.outputs.network_vpc_id
+
+  health_check {
+    healthy_threshold   = "3"
+    interval            = "300"
+    protocol            = "HTTP"
+    matcher             = "200"
+    timeout             = "3"
+    path                = "/"
+    unhealthy_threshold = "2"
+  }
+
+  tags = merge(
+    {
+      Name = "tg-${local.settings.env}-${local.settings.region}-ecs-app-green-01"
+    },
+    local.tags
+  )
+}
+
+#Listener for ECS Load Balancer
 resource "aws_lb_listener" "ecs_app_listener" {
   load_balancer_arn = aws_lb.ecs_alb.arn
   port              = "80"
