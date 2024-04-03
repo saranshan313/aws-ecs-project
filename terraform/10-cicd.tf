@@ -140,6 +140,7 @@ resource "aws_codebuild_project" "ecs_apps" {
 
   source {
     type = "CODECOMMIT"
+    location = "https://git-codecommit.${local.settings.region}.amazonaws.com/v1/repos/repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
   }
 
   tags = merge(
@@ -316,11 +317,11 @@ resource "aws_codepipeline" "ecs_apps" {
   }
 }
 
-#Source Code repository type to trigger codepipeline
-resource "aws_codestarconnections_connection" "source_provider" {
-  name          = "sourceconn-${local.settings.env}-${local.settings.region}-ecs-01"
-  provider_type = "GitHub"
-}
+# #Source Code repository type to trigger codepipeline
+# resource "aws_codestarconnections_connection" "source_provider" {
+#   name          = "sourceconn-${local.settings.env}-${local.settings.region}-ecs-01"
+#   provider_type = "GitHub"
+# }
 
 #S3 bucket for Code Pipeline
 resource "aws_s3_bucket" "ecs_pipeline" {
