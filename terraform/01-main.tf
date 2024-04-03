@@ -24,3 +24,4 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
+data "aws_caller_identity" "current" {}
