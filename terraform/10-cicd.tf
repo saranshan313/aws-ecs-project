@@ -342,6 +342,10 @@ resource "aws_codepipeline" "ecs_apps" {
         DeploymentGroupName            = "deploygrp-${local.settings.env}-${local.settings.region}-ecs-01"
         TaskDefinitionTemplatePath     = "imagedefinitions.json"
         TaskDefinitionTemplateArtifact = "build_output"
+        AppSpecTemplateArtifact        = "build_output"
+        AppSpecTemplatePath            = "appspec.yaml"
+        #        Image1ArtifactName             = "build_output"
+        Image1ContainerName = "webapp"
       }
     }
   }
