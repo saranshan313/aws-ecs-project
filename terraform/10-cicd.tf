@@ -139,7 +139,7 @@ resource "aws_codebuild_project" "ecs_apps" {
   }
 
   source {
-    type = "CODECOMMIT"
+    type     = "CODECOMMIT"
     location = "https://git-codecommit.${local.settings.region}.amazonaws.com/v1/repos/repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
   }
 
@@ -392,9 +392,15 @@ data "aws_iam_policy_document" "codepipeline_policy" {
   }
 
   statement {
-    effect    = "Allow"
-    actions   = ["codestar-connections:UseConnection"]
-    resources = [aws_codestarconnections_connection.source_provider.arn]
+    effect = "Allow"
+    actions = [
+      "codecommit:CancelUploadArchive",
+      "codecommit:GetBranch",
+      "codecommit:GetCommit",
+      "codecommit:GetUploadArchiveStatus",
+      "codecommit:UploadArchive"
+    ]
+    resources = ["*"]
   }
 
   statement {
