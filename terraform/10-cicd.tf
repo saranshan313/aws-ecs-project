@@ -2,7 +2,8 @@
 resource "aws_codecommit_repository" "ecs_app" {
   repository_name = "repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
   description     = "This is the Sample App Repository"
-
+  default_branch  = "main"
+  
   tags = merge(
     local.tags,
     {

@@ -85,7 +85,7 @@ resource "aws_ecs_service" "ecs_app" {
   task_definition      = aws_ecs_task_definition.ecs_app.arn
   launch_type          = "FARGATE"
   scheduling_strategy  = "REPLICA"
-  desired_count        = 2
+  desired_count        = 1
   force_new_deployment = true
   propagate_tags       = "TASK_DEFINITION"
 
