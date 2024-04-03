@@ -1,3 +1,16 @@
+#CodeCommit Repository for ECS App
+resource "aws_codecommit_repository" "ecs_app" {
+  repository_name = "repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
+  description     = "This is the Sample App Repository"
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
+    }
+  )
+}
+
 #S3 bucket for code build artifacts
 resource "aws_s3_bucket" "ecs_codebuild" {
   bucket        = "s3-${local.settings.env}-${local.settings.region}-ecsbuild-01"
@@ -126,9 +139,7 @@ resource "aws_codebuild_project" "ecs_apps" {
   }
 
   source {
-    type            = "GITHUB"
-    location        = "https://github.com/saranshan313/sample-app.git"
-    git_clone_depth = 1
+    type = "CODECOMMIT"
   }
 
   tags = merge(
@@ -247,15 +258,15 @@ resource "aws_codepipeline" "ecs_apps" {
       name             = "Source"
       category         = "Source"
       owner            = "AWS"
-      provider         = "CodeStarSourceConnection"
+      provider         = "CodeCommit"
       version          = "1"
       output_artifacts = ["source_output"]
       run_order        = 1
 
       configuration = {
-        ConnectionArn    = aws_codestarconnections_connection.source_provider.arn
-        FullRepositoryId = "saranshan313/sample-app"
-        BranchName       = "main"
+        RepositoryName       = "repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
+        BranchName           = "main"
+        PollForSourceChanges = true
       }
     }
   }
@@ -292,14 +303,14 @@ resource "aws_codepipeline" "ecs_apps" {
       run_order       = 1
 
       configuration = {
-        #        AppSpecTemplateArtifact        = SourceArtifact
+        AppSpecTemplateArtifact        = "build_output"
         ApplicationName                = "deploy-${local.settings.env}-${local.settings.region}-ecs-01"
         DeploymentGroupName            = "deploygrp-${local.settings.env}-${local.settings.region}-ecs-01"
         Image1ArtifactName             = "sample-app"
         Image1ContainerName            = "IMAGE1_NAME"
         TaskDefinitionTemplatePath     = "taskdef.json"
         AppSpecTemplatePath            = "appspec.yaml"
-        TaskDefinitionTemplateArtifact = "SourceArtifact"
+        TaskDefinitionTemplateArtifact = "build_output"
       }
     }
   }
