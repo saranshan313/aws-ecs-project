@@ -137,12 +137,26 @@ resource "aws_codebuild_project" "ecs_apps" {
     image_pull_credentials_type = "CODEBUILD"
     privileged_mode             = true
 
+    environment_variable {
+      name  = "AWS_DEFAULT_REGION"
+      value = local.regions[local.settings.region]
+    }
+    environment_variable {
+      name  = "AWS_ACCOUNT_ID"
+      value = data.aws_caller_identity.current.account_id
+    }
+    environment_variable {
+      name  = "IMAGE_REPO_NAME"
+      value = "repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
+    }
   }
 
   source {
     type     = "CODECOMMIT"
     location = "https://git-codecommit.${local.settings.region}.amazonaws.com/v1/repos/repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
   }
+
+
 
   tags = merge(
     local.tags,
