@@ -162,6 +162,12 @@ resource "aws_codebuild_project" "ecs_apps" {
       name  = "IMAGE_REPO_NAME"
       value = "repo-${local.settings.env}-${local.settings.region}-app-01"
     }
+    environment_variable {
+      name  = "CONTAINER_NAME"
+      value = "webapp"
+    }
+
+
   }
 
   source {
@@ -336,8 +342,8 @@ resource "aws_codepipeline" "ecs_apps" {
         ApplicationName                = "deploy-${local.settings.env}-${local.settings.region}-ecs-01"
         DeploymentGroupName            = "deploygrp-${local.settings.env}-${local.settings.region}-ecs-01"
         Image1ArtifactName             = "sample-app"
-        Image1ContainerName            = "IMAGE1_NAME"
-        TaskDefinitionTemplatePath     = "taskdef.json"
+        Image1ContainerName            = "webapp"
+        TaskDefinitionTemplatePath     = "imagedefinitions.json"
         AppSpecTemplatePath            = "appspec.yaml"
         TaskDefinitionTemplateArtifact = "build_output"
       }
@@ -437,6 +443,22 @@ data "aws_iam_policy_document" "codepipeline_policy" {
     actions = [
       "codebuild:BatchGetBuilds",
       "codebuild:StartBuild",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "codedeploy:CreateDeployment",
+      "codedeploy:GetDeployment",
+      "codedeploy:GetDeploymentConfig",
+      "codedeploy:GetApplicationRevision",
+      "codedeploy:RegisterApplicationRevision",
+      "codedeploy:GetApplication",
+      "ecs:RegisterTaskDefinition"
     ]
 
     resources = ["*"]
