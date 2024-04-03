@@ -160,7 +160,7 @@ resource "aws_codebuild_project" "ecs_apps" {
     }
     environment_variable {
       name  = "IMAGE_REPO_NAME"
-      value = "repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
+      value = "repo-${local.settings.env}-${local.settings.region}-app-01"
     }
   }
 
