@@ -89,6 +89,17 @@ data "aws_iam_policy_document" "ecs_codebuild_permission_policy" {
       "*"
     ]
   }
+  statement {
+    effect = "Allow"
+    actions = [
+      "codecommit:CancelUploadArchive",
+      "codecommit:GetBranch",
+      "codecommit:GetCommit",
+      "codecommit:GetUploadArchiveStatus",
+      "codecommit:UploadArchive"
+    ]
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_role" "ecs_codebuild" {
