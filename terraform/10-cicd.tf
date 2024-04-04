@@ -474,6 +474,22 @@ data "aws_iam_policy_document" "codepipeline_policy" {
 
     resources = ["*"]
   }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "iam:PassedToService"
+      values = [
+        "ecs-tasks.amazonaws.com"
+      ]
+    }
+  }
 }
 
 resource "aws_iam_role_policy" "codepipeline_policy" {
