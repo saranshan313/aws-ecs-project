@@ -166,7 +166,18 @@ resource "aws_codebuild_project" "ecs_apps" {
       name  = "CONTAINER_NAME"
       value = "webapp"
     }
-
+    environment_variable {
+      name  = "TASK_DEFINITION_ARN"
+      value = aws_ecs_task_definition.ecs_app.arn
+    }
+    environment_variable {
+      name  = "TASK_EXEC_ROLE_ARN"
+      value = aws_iam_role.ecsTaskExecutionRole.arn
+    }
+    environment_variable {
+      name  = "FAMILY_NAME"
+      value = "task-${local.settings.env}-${local.settings.region}-app-01"
+    }
 
   }
 
@@ -340,7 +351,7 @@ resource "aws_codepipeline" "ecs_apps" {
       configuration = {
         ApplicationName                = "deploy-${local.settings.env}-${local.settings.region}-ecs-01"
         DeploymentGroupName            = "deploygrp-${local.settings.env}-${local.settings.region}-ecs-01"
-        TaskDefinitionTemplatePath     = "imagedefinitions.json"
+        TaskDefinitionTemplatePath     = "taskdef.json"
         TaskDefinitionTemplateArtifact = "build_output"
         AppSpecTemplateArtifact        = "build_output"
         AppSpecTemplatePath            = "appspec.yaml"
