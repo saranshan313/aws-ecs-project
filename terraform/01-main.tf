@@ -28,4 +28,5 @@ data "aws_caller_identity" "current" {}
 
 data "aws_secretsmanager_random_password" "ecs_rds" {
   password_length = 15
+  exclude_characters = "`,\"-_''@/\\"
 }
