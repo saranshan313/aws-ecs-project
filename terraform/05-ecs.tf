@@ -51,6 +51,28 @@ resource "aws_ecs_task_definition" "ecs_app" {
           protocol      = "tcp"
         }
       ]
+      environment = [
+        {
+          name  = "DB_USER"
+          value = "${local.settings.ecs_rds.username}"
+        },
+        {
+          name  = "DB_PASSWORD"
+          value = "${data.aws_secretsmanager_random_password.ecs_rds.random_password}"
+        },
+        {
+          name  = "DB_HOST"
+          value = "${aws_db_instance.ecs_rds.address}"
+        },
+        {
+          name  = "DB_PORT"
+          value = "3306"
+        },
+        {
+          name  = "DB_NAME"
+          value = "ecsapps"
+        }
+      ]
     }
   ])
 
