@@ -351,12 +351,12 @@ resource "aws_codepipeline" "ecs_apps" {
       configuration = {
         ApplicationName     = "deploy-${local.settings.env}-${local.settings.region}-ecs-01"
         DeploymentGroupName = "deploygrp-${local.settings.env}-${local.settings.region}-ecs-01"
-        #        TaskDefinitionTemplatePath     = "taskdef.json"
-        #        TaskDefinitionTemplateArtifact = "build_output"
+        TaskDefinitionTemplatePath     = "taskdef.json"
+        TaskDefinitionTemplateArtifact = "build_output"
         AppSpecTemplateArtifact = "build_output"
         AppSpecTemplatePath     = "appspec.yaml"
-        Image1ArtifactName      = "build_output"
-        Image1ContainerName     = "webapp"
+#        Image1ArtifactName      = "build_output"
+#        Image1ContainerName     = "webapp"
       }
     }
   }
