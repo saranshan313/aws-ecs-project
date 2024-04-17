@@ -53,23 +53,23 @@ resource "aws_ecs_task_definition" "ecs_app" {
       ]
       environment = [
         {
-          name  = "DB_USER"
+          name      = "DB_USER"
           valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_NAME:AWSCURRENT:"
         },
         {
-          name  = "DB_PASSWORD"
+          name      = "DB_PASSWORD"
           valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_PASSWORD:AWSCURRENT:"
         },
         {
-          name  = "DB_HOST"
+          name      = "DB_HOST"
           valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_HOST:AWSCURRENT:"
         },
         {
-          name  = "DB_PORT"
+          name      = "DB_PORT"
           valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_PORT:AWSCURRENT:"
         },
         {
-          name  = "DB_NAME"
+          name      = "DB_NAME"
           valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_NAME:AWSCURRENT:"
         }
       ]
