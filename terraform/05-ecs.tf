@@ -143,7 +143,8 @@ resource "aws_ecs_service" "ecs_app" {
   lifecycle {
     ignore_changes = [
       desired_count,
-      task_definition
+      task_definition,
+      load_balancer
     ]
   }
 
