@@ -54,7 +54,7 @@ resource "aws_ecs_task_definition" "ecs_app" {
       secrets = [
         {
           name      = "DB_USER"
-          valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_NAME:AWSCURRENT:"
+          valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_USER:AWSCURRENT:"
         },
         {
           name      = "DB_PASSWORD"
