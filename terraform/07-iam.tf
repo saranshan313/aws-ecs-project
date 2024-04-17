@@ -39,7 +39,7 @@ resource "aws_iam_policy" "ecsTaskExecutionRole_policy" {
           "secretsmanager:GetSecretValue",
         ]
         Effect   = "Allow"
-        Resource = "${aws_secretsmanager_secret.ecs_rds.arn}"
+        Resource = aws_secretsmanager_secret.ecs_rds.arn
       },
     ]
   })
