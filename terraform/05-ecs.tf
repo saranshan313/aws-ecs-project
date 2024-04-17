@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "ecs_app" {
           protocol      = "tcp"
         }
       ]
-      environment = [
+      secrets = [
         {
           name      = "DB_USER"
           valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_NAME:AWSCURRENT:"
@@ -142,7 +142,8 @@ resource "aws_ecs_service" "ecs_app" {
 
   lifecycle {
     ignore_changes = [
-      desired_count
+      desired_count,
+      task_definition
     ]
   }
 
