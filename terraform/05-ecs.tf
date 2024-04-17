@@ -139,6 +139,13 @@ resource "aws_ecs_service" "ecs_app" {
     aws_iam_role.ecsTaskExecutionRole,
     aws_db_instance.ecs_rds
   ]
+
+  lifecycle {
+    ignore_changes = [
+      desired_count
+    ]
+  }
+
 }
 
 resource "aws_security_group" "ecs_app_service" {
