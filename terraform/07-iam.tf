@@ -24,6 +24,11 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
+resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole__secret_policy" {
+  role       = aws_iam_role.ecsTaskExecutionRole.name
+  policy_arn = aws_iam_policy.ecsTaskExecutionRole_policy.arn
+}
+
 resource "aws_iam_policy" "ecsTaskExecutionRole_policy" {
   name        = "policy-${local.settings.env}-${local.settings.region}-ecstask-01"
   path        = "/"

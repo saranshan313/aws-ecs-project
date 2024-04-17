@@ -70,11 +70,11 @@ resource "aws_db_instance" "ecs_rds" {
       Name = "rds-${local.settings.env}-${local.settings.region}-ecs-rds-01"
   })
 
-  # lifecycle {
-  #   ignore_changes = [
-  #     password
-  #   ]
-  # }
+  lifecycle {
+    ignore_changes = [
+      password
+    ]
+  }
 }
 
 #RDS database secret
@@ -96,4 +96,9 @@ resource "aws_secretsmanager_secret_version" "ecs_rds" {
     DB_USER : local.settings.ecs_rds.username,
     DB_PASSWORD : data.aws_secretsmanager_random_password.ecs_rds.random_password
   })
+  lifecycle {
+    ignore_changes = [
+      secret_string
+    ]
+  }
 }
