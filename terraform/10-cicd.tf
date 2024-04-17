@@ -177,8 +177,11 @@ resource "aws_codebuild_project" "ecs_apps" {
     environment_variable {
       name  = "FAMILY_NAME"
       value = "task-${local.settings.env}-${local.settings.region}-app-01"
+    }    
+    environment_variable {
+      name  = "SECRET_ARN"
+      value = aws_secretsmanager_secret_version.ecs_rds.arn
     }
-
   }
 
   source {

@@ -44,7 +44,7 @@ resource "aws_security_group" "ecs_rds" {
 
 #RDS Database for ECS Applications
 resource "aws_db_instance" "ecs_rds" {
-  db_name             = "ecsapps"
+  db_name             = local.settings.ecs_rds_dbname
   allocated_storage   = local.settings.ecs_rds.allocated_storage
   storage_type        = local.settings.ecs_rds.storage_type
   engine              = local.settings.ecs_rds.engine
@@ -69,6 +69,12 @@ resource "aws_db_instance" "ecs_rds" {
     {
       Name = "rds-${local.settings.env}-${local.settings.region}-ecs-rds-01"
   })
+
+  lifecycle {
+    ignore_changes = [
+      password
+    ]
+  }
 }
 
 #RDS database secret
@@ -85,6 +91,9 @@ resource "aws_secretsmanager_secret" "ecs_rds" {
 resource "aws_secretsmanager_secret_version" "ecs_rds" {
   secret_id = aws_secretsmanager_secret.ecs_rds.id
   secret_string = jsonencode({
-    password : data.aws_secretsmanager_random_password.ecs_rds.random_password
+    DB_HOST: aws_db_instance.ecs_rds.address,
+    DB_NAME: local.settings.ecs_rds_dbname,
+    DB_USER: local.settings.ecs_rds.username,
+    DB_PASSWORD : data.aws_secretsmanager_random_password.ecs_rds.random_password
   })
 }
