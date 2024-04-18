@@ -60,7 +60,7 @@ resource "aws_lb_target_group" "ecs_alb_tg_blue" {
     protocol            = "HTTP"
     matcher             = "200"
     timeout             = "3"
-    path                = "/login"
+    path                = "/healthcheck"
     unhealthy_threshold = "2"
   }
 
@@ -85,7 +85,7 @@ resource "aws_lb_target_group" "ecs_alb_tg_green" {
     protocol            = "HTTP"
     matcher             = "200"
     timeout             = "3"
-    path                = "/login"
+    path                = "/healthcheck"
     unhealthy_threshold = "2"
   }
 
