@@ -92,6 +92,7 @@ resource "aws_secretsmanager_secret_version" "ecs_rds" {
   secret_id = aws_secretsmanager_secret.ecs_rds.id
   secret_string = jsonencode({
     DB_HOST : aws_db_instance.ecs_rds.address,
+    DB_PORT : local.settings.ecs_rds.dbport,
     DB_NAME : local.settings.ecs_rds.dbname,
     DB_USER : local.settings.ecs_rds.username,
     DB_PASSWORD : data.aws_secretsmanager_random_password.ecs_rds.random_password

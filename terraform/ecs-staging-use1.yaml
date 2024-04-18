@@ -51,6 +51,7 @@ ecs_rds:
   instance_class: db.t3.micro
   username: ecsroot
   dbname: ecsapps
+  dbport: 3306
   deletion_protection: false
   manage_master_user_password: true
   skip_final_snapshot: true
