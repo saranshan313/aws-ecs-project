@@ -182,6 +182,10 @@ resource "aws_codebuild_project" "ecs_apps" {
       name  = "SECRET_ARN"
       value = aws_secretsmanager_secret_version.ecs_rds.arn
     }
+    environment_variable {
+      name  = "TASK_NAME"
+      value = "task-${local.settings.env}-${local.settings.region}-app-01"
+    }
   }
 
   source {
