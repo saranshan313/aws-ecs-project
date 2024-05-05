@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   policy_arn = aws_iam_policy.ecsTaskExecutionRole_policy.arn
 }
 
-resource "aws_iam_policy" "ecsTaskExecutionRole_policy" {
+resource "aws_iam_policy" "ecsTaskExecutionRole_custom_policy" {
   name        = "policy-${local.settings.env}-${local.settings.region}-ecstask-01"
   path        = "/"
   description = "Allow ECS task to access the Secrets and create log groups"
