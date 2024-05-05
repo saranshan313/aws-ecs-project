@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
-resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole__secret_policy" {
+resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   role       = aws_iam_role.ecsTaskExecutionRole.name
   policy_arn = aws_iam_policy.ecsTaskExecutionRole_policy.arn
 }
@@ -32,7 +32,7 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole__secret_policy" 
 resource "aws_iam_policy" "ecsTaskExecutionRole_policy" {
   name        = "policy-${local.settings.env}-${local.settings.region}-ecstask-01"
   path        = "/"
-  description = "Allow ECS task to access the Secrets"
+  description = "Allow ECS task to access the Secrets and create log groups"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -46,6 +46,18 @@ resource "aws_iam_policy" "ecsTaskExecutionRole_policy" {
         Effect   = "Allow"
         Resource = aws_secretsmanager_secret.ecs_rds.arn
       },
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:GetLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
     ]
   })
 }
