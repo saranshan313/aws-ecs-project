@@ -18,7 +18,7 @@ provider "aws" {
 data "terraform_remote_state" "vpc" {
   backend = "s3"
   config = {
-    bucket = "tf-remote-state-234-343-555"
+    bucket = "tf-remote-state-234-343-555-999"
     key    = "env:/infra-${local.settings.env}-${local.settings.region}/infra-${local.settings.env}-${local.settings.region}.tfstate"
     region = local.regions[local.settings.region]
   }
