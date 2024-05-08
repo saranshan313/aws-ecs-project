@@ -44,7 +44,7 @@ resource "aws_security_group" "ecs_rds" {
 
 #RDS Database for ECS Applications
 resource "aws_db_instance" "ecs_rds" {
-  db_name             = "ecsapps"
+  db_name             = local.settings.ecs_rds.dbname
   allocated_storage   = local.settings.ecs_rds.allocated_storage
   storage_type        = local.settings.ecs_rds.storage_type
   engine              = local.settings.ecs_rds.engine
@@ -59,8 +59,8 @@ resource "aws_db_instance" "ecs_rds" {
   ]
   db_subnet_group_name = aws_db_subnet_group.ecs_rds.name
 
-  manage_master_user_password = local.settings.ecs_rds.manage_master_user_password
-  skip_final_snapshot         = local.settings.ecs_rds.skip_final_snapshot
+  password            = data.aws_secretsmanager_random_password.ecs_rds.random_password
+  skip_final_snapshot = local.settings.ecs_rds.skip_final_snapshot
 
   multi_az = local.settings.ecs_rds.multi_az
 
@@ -69,4 +69,37 @@ resource "aws_db_instance" "ecs_rds" {
     {
       Name = "rds-${local.settings.env}-${local.settings.region}-ecs-rds-01"
   })
+
+  lifecycle {
+    ignore_changes = [
+      password
+    ]
+  }
+}
+
+#RDS database secret
+resource "aws_secretsmanager_secret" "ecs_rds" {
+  name = "secret-${local.settings.env}-${local.settings.region}-ecs-rds-01"
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "secret-${local.settings.env}-${local.settings.region}-ecs-rds-01"
+  })
+}
+
+resource "aws_secretsmanager_secret_version" "ecs_rds" {
+  secret_id = aws_secretsmanager_secret.ecs_rds.id
+  secret_string = jsonencode({
+    DB_HOST : aws_db_instance.ecs_rds.address,
+    DB_PORT : local.settings.ecs_rds.dbport,
+    DB_NAME : local.settings.ecs_rds.dbname,
+    DB_USER : local.settings.ecs_rds.username,
+    DB_PASSWORD : data.aws_secretsmanager_random_password.ecs_rds.random_password
+  })
+  lifecycle {
+    ignore_changes = [
+      secret_string
+    ]
+  }
 }

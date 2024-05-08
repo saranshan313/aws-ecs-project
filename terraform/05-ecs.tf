@@ -51,6 +51,28 @@ resource "aws_ecs_task_definition" "ecs_app" {
           protocol      = "tcp"
         }
       ]
+      secrets = [
+        {
+          name      = "DB_USER"
+          valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_USER:AWSCURRENT:"
+        },
+        {
+          name      = "DB_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_PASSWORD:AWSCURRENT:"
+        },
+        {
+          name      = "DB_HOST"
+          valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_HOST:AWSCURRENT:"
+        },
+        {
+          name      = "DB_PORT"
+          valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_PORT:AWSCURRENT:"
+        },
+        {
+          name      = "DB_NAME"
+          valueFrom = "${aws_secretsmanager_secret_version.ecs_rds.arn}:DB_NAME:AWSCURRENT:"
+        }
+      ]
     }
   ])
 
@@ -117,6 +139,15 @@ resource "aws_ecs_service" "ecs_app" {
     aws_iam_role.ecsTaskExecutionRole,
     aws_db_instance.ecs_rds
   ]
+
+  lifecycle {
+    ignore_changes = [
+      desired_count,
+      task_definition,
+      load_balancer
+    ]
+  }
+
 }
 
 resource "aws_security_group" "ecs_app_service" {

@@ -160,7 +160,7 @@ resource "aws_codebuild_project" "ecs_apps" {
     }
     environment_variable {
       name  = "IMAGE_REPO_NAME"
-      value = "repo-${local.settings.env}-${local.settings.region}-app-01"
+      value = "repo-${local.settings.env}-${local.settings.region}-ecsapp-01"
     }
     environment_variable {
       name  = "CONTAINER_NAME"
@@ -178,7 +178,14 @@ resource "aws_codebuild_project" "ecs_apps" {
       name  = "FAMILY_NAME"
       value = "task-${local.settings.env}-${local.settings.region}-app-01"
     }
-
+    environment_variable {
+      name  = "SECRET_ARN"
+      value = aws_secretsmanager_secret_version.ecs_rds.arn
+    }
+    environment_variable {
+      name  = "TASK_NAME"
+      value = "task-${local.settings.env}-${local.settings.region}-app-01"
+    }
   }
 
   source {
@@ -355,8 +362,8 @@ resource "aws_codepipeline" "ecs_apps" {
         TaskDefinitionTemplateArtifact = "build_output"
         AppSpecTemplateArtifact        = "build_output"
         AppSpecTemplatePath            = "appspec.yaml"
-        #        Image1ArtifactName             = "build_output"
-        Image1ContainerName = "webapp"
+        #        Image1ArtifactName      = "build_output"
+        #        Image1ContainerName     = "webapp"
       }
     }
   }
